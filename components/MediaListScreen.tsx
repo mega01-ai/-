@@ -11,6 +11,7 @@ interface MediaListScreenProps {
   favorites: string[];
   onToggleFavorite: (id: string) => void;
   onPlay: (item: MediaItem) => void;
+  onDownload: (item: MediaItem) => void;
   currentlyPlayingId?: string | null;
 }
 
@@ -21,6 +22,7 @@ const MediaListScreen: React.FC<MediaListScreenProps> = ({
   favorites, 
   onToggleFavorite,
   onPlay,
+  onDownload,
   currentlyPlayingId
 }) => {
   return (
@@ -44,6 +46,7 @@ const MediaListScreen: React.FC<MediaListScreenProps> = ({
               isFavorite={favorites.includes(item.id)}
               onToggleFavorite={onToggleFavorite}
               onPlay={onPlay}
+              onDownload={onDownload}
               isPlaying={currentlyPlayingId === item.id}
             />
           ))}

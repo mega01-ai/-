@@ -46,6 +46,30 @@ const App: React.FC = () => {
     }
   }, []);
 
+  const handleDownload = useCallback(async (item: MediaItem) => {
+    try {
+      const response = await fetch(item.url);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch file: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.style.display = 'none';
+      a.href = url;
+      const fileExtension = item.type === 'audio' ? 'mp3' : 'mp4';
+      a.download = `${item.title} - ${item.reciter}.${fileExtension}`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Optionally, show an error message to the user
+      alert('عذراً، تعذر تحميل الملف.');
+    }
+  }, []);
+
   const latestAdditions = useMemo(() => 
     [...mediaItems].sort((a, b) => new Date(b.addedDate).getTime() - new Date(a.addedDate).getTime()).slice(0, 10), 
     [mediaItems]
@@ -72,6 +96,7 @@ const App: React.FC = () => {
             favorites={favorites}
             onToggleFavorite={toggleFavorite}
             onPlay={handlePlay}
+            onDownload={handleDownload}
             currentlyPlayingId={currentlyPlaying?.id}
           />
         );
@@ -84,6 +109,7 @@ const App: React.FC = () => {
             favorites={favorites}
             onToggleFavorite={toggleFavorite}
             onPlay={handlePlay}
+            onDownload={handleDownload}
             currentlyPlayingId={currentlyPlaying?.id}
           />
         );
@@ -96,6 +122,7 @@ const App: React.FC = () => {
             favorites={favorites}
             onToggleFavorite={toggleFavorite}
             onPlay={handlePlay}
+            onDownload={handleDownload}
             currentlyPlayingId={currentlyPlaying?.id}
           />
         );

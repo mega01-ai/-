@@ -1,16 +1,17 @@
 import React from 'react';
 import { MediaItem } from '../types';
-import { AudioIcon, VideoIcon, HeartIcon, PlayIcon, PauseIcon } from './icons/Icons';
+import { AudioIcon, VideoIcon, HeartIcon, PlayIcon, PauseIcon, DownloadIcon } from './icons/Icons';
 
 interface MediaItemCardProps {
   item: MediaItem;
   isFavorite: boolean;
   onToggleFavorite: (id: string) => void;
   onPlay: (item: MediaItem) => void;
+  onDownload: (item: MediaItem) => void;
   isPlaying: boolean;
 }
 
-const MediaItemCard: React.FC<MediaItemCardProps> = ({ item, isFavorite, onToggleFavorite, onPlay, isPlaying }) => {
+const MediaItemCard: React.FC<MediaItemCardProps> = ({ item, isFavorite, onToggleFavorite, onPlay, onDownload, isPlaying }) => {
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onToggleFavorite(item.id);
@@ -19,6 +20,11 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({ item, isFavorite, onToggl
   const handlePlayClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onPlay(item);
+  }
+
+  const handleDownloadClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onDownload(item);
   }
 
   // Use a different style for video items to indicate they open externally
@@ -37,11 +43,14 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({ item, isFavorite, onToggl
         <h4 className="font-semibold text-white">{item.title}</h4>
         <p className="text-sm text-gray-300">{item.reciter}</p>
       </div>
-      <div className="flex items-center space-x-4">
-        <button onClick={handlePlayClick} className="p-2 rounded-full hover:bg-gray-600 transition-colors">
+      <div className="flex items-center space-x-2 rtl:space-x-reverse">
+        <button onClick={handlePlayClick} className="p-2 rounded-full hover:bg-gray-600 transition-colors" aria-label={isPlaying ? "إيقاف" : "تشغيل"}>
             {isPlaying && !isVideo ? <PauseIcon /> : <PlayIcon />}
         </button>
-        <button onClick={handleFavoriteClick} className="p-2 rounded-full hover:bg-gray-600 transition-colors">
+        <button onClick={handleDownloadClick} className="p-2 rounded-full hover:bg-gray-600 transition-colors" aria-label="تحميل">
+          <DownloadIcon />
+        </button>
+        <button onClick={handleFavoriteClick} className="p-2 rounded-full hover:bg-gray-600 transition-colors" aria-label={isFavorite ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}>
           <HeartIcon filled={isFavorite} />
         </button>
       </div>
